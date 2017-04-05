@@ -7,8 +7,9 @@ Whats in here:
 
 1. VocabAnalysis.py Pass in a clients vocabulary (see test.txt for the kind of format of this) and will output a lot of statistcs on this data. NB: choose the right scan steps - right now hardcoded in the top of the file. 
 2. StepAnalysis.py. Read in a scan step csv and provide a test sentence (and if you wish a scan rate) and will give estimates for time to take to write this message.
-
 3. scan-steps-lib/ a library of scan steps for different layouts. 
+4. Mapper/ - a funky script that tries to show you what a frequency list would like in a grid you make. 
+
 
 ### To-Do:
 
