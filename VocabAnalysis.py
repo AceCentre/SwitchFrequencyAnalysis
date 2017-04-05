@@ -93,56 +93,56 @@ def printStats(vocab_file, inc_spaces):
 
 	total = totalpred = totalin_core = totalchr = 0
 	avgWordLen, charcount, wordcount, avg_wps, max_wps, predicted_words, pwords, in_core = word_stats(vocab_file)
-	click.echo("total words:")
+	print("total words:")
 	with open('output-all-words.csv', 'w') as csv_file:
 		writer = csv.writer(csv_file)
 		for item in sorted(wordcount, key=wordcount.get, reverse=True):
 			writer.writerow([item, wordcount[item]])
-			click.echo(item, wordcount[item])
+			print(item, wordcount[item])
 			total = total+wordcount[item]
-	click.echo("------")
-	click.echo("predicted words:")
+	print("------")
+	print("predicted words:")
 	with open('output-pred-words.csv', 'w') as csv_file:
 		writer = csv.writer(csv_file)
 		for itemp in sorted(pwords, key=pwords.get, reverse=True):
 			writer.writerow([itemp, pwords[itemp]])
-			click.echo(itemp, pwords[itemp])
+			print(itemp, pwords[itemp])
 			totalpred = totalpred+pwords[itemp]
-	click.echo("------")
-	click.echo("in core:")
+	print("------")
+	print("in core:")
 	with open('output-incore-words.csv', 'w') as csv_file:
 		writer = csv.writer(csv_file)
 		for itemc in sorted(in_core, key=in_core.get, reverse=True):
 			writer.writerow([itemc, in_core[itemc]])
-			click.echo(itemc, in_core[itemc])
+			print(itemc, in_core[itemc])
 			totalin_core = totalin_core+in_core[itemc]
-	click.echo("------")
-	click.echo("total chars:")
+	print("------")
+	print("total chars:")
 	with open('output-incore-words.csv', 'w') as csv_file:
 		writer = csv.writer(csv_file)
 		for itemch in sorted(charcount, key=charcount.get, reverse=True): 
 			writer.writerow([itemch, charcount[itemch]])
-			click.echo(itemch, charcount[itemch])
+			print(itemch, charcount[itemch])
 			totalchr = totalchr+charcount[itemch]
-	click.echo("total words:" + str(total))
-	click.echo("total chars:" + str(totalchr))
-	click.echo("words in core:" + str(len(in_core)))
-	click.echo("total words (i.e. inc repeats) in core:" + str(totalin_core))
-	click.echo("avg word len:" +str(avgWordLen))
-	click.echo("avg wps:" + str(avg_wps))
-	click.echo("max wps:" + str(max_wps))
-	click.echo("predicted words:" + str(predicted_words))
-	click.echo("------")
+	print("total words:" + str(total))
+	print("total chars:" + str(totalchr))
+	print("words in core:" + str(len(in_core)))
+	print("total words (i.e. inc repeats) in core:" + str(totalin_core))
+	print("avg word len:" +str(avgWordLen))
+	print("avg wps:" + str(avg_wps))
+	print("max wps:" + str(max_wps))
+	print("predicted words:" + str(predicted_words))
+	print("------")
 	totalFreqScan = 0
-	click.echo("Letter count, Frequency, Letter, Scan Steps, FreqXScanSteps, ")
+	print("Letter count, Frequency, Letter, Scan Steps, FreqXScanSteps, ")
 	with open('output-freqfinal-words.csv', 'w') as csv_file:
 		writer = csv.writer(csv_file)
 		writer.writerow(['Letter count', 'Frequency', 'Letter', 'Scan Steps', 'FreqXScanSteps' ])
 		for s in charcount: 
 			writer.writerow([str(float(charcount[s])),str(float(charcount[s])/totalchr),s, scan_steps[s], str((float(charcount[s])/totalchr) * scan_steps[s])])
-			click.echo(str(float(charcount[s])),',',str(float(charcount[s])/totalchr),',',s,',', scan_steps[s],',', str((float(charcount[s])/totalchr) * scan_steps[s]))
+			print(str(float(charcount[s])),',',str(float(charcount[s])/totalchr),',',s,',', scan_steps[s],',', str((float(charcount[s])/totalchr) * scan_steps[s]))
 			totalFreqScan = totalFreqScan + ((float(charcount[s])/totalchr) * scan_steps[s])
-	click.echo("Total Frequency X Scan Steps:", totalFreqScan)
+	print("Total Frequency X Scan Steps:", totalFreqScan)
 
 if __name__ == '__main__':
 	printStats()
