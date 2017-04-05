@@ -1,20 +1,7 @@
 import sys
 import csv
-
-# Outline your scan steps here
-# Sams Scan Steps - with the extra hit
-#scan_steps = {'e':2,'t':4,'o':7,'a':3,'n':9,'i':8,'s':5,'r':6,'h':4,'l':3,'d':8,'u':9,'w':4,'f':9,'m':5,'c':5,'g':7,'p':6,'b':8,'y':7,'k':6,'v':10,'x':6,'j':11,'z':7,'q':5}
-# Heidis Scan steps - "Full" steps
-scan_steps = { 'e':0,'t':2,'o':5,'a':1,'n':7,'i':6,'s':3,'r':4,'h':2,'l':1,'d':6,'u':7,'w':2,'f':7,'m':3,'c':3,'g':5,'p':4,'b':6,'y':5,'k':4,'v':8,'x':4,'j':9,'z':5,'q':3}
-
-# Do we include spaces
-inc_spaces = True
-
-# Not using these - but we could use this to exclude common (core) words
-# e.g http://ir.dcs.gla.ac.uk/resources/linguistic_utils/stop_words
-# from an example at http://programminghistorian.org/lessons/counting-frequencies
-stopwords = ['a', 'about', 'above', 'across', 'after', 'afterwards']
-stopwords += ['again', 'against', 'all', 'almost', 'alone', 'along']
+import click
+import os.path
 
 def word_stats(file_name):
 	import re
@@ -81,60 +68,82 @@ def getCharsSpoken(wordlist):
 def removeStopwords(wordlist, stopwords):
     return [w for w in wordlist if w not in stopwords]
 
+@click.command()
+@click.option('--vocab-file', default='examples/vocab.txt', help='Path to a vocab file. String on each line. ')
+#@click.option('--scan_steps', default=scan_steps, type=bool, help='Ignore spaces? Useful if you have no space in your layout')
+@click.option('--inc-spaces', default=True, type=bool, help='Ignore spaces? Useful if you have no space in your layout')
+#@click.option('--stop-words', default=True, type=bool, help='Ignore spaces? Useful if you have no space in your layout')
 
 
 # Open file. 
 #  NB: Each line is a sentence. Only uppercase letters which have been predicted by a partner - INCLUDING first letters
+def printStats(vocab_file, inc_spaces):
 
-total = totalpred = totalin_core = totalchr = 0
-avgWordLen, charcount, wordcount, avg_wps, max_wps, predicted_words, pwords, in_core = word_stats('DB-bridden.txt')
-print "total words:"
-with open('output-all-words.csv', 'wb') as csv_file:
-	writer = csv.writer(csv_file)
-	for item in sorted(wordcount, key=wordcount.get, reverse=True):
-		writer.writerow([item, wordcount[item]])
-		print item, wordcount[item]
-		total = total+wordcount[item]
-print "------"
-print "predicted words:"
-with open('output-pred-words.csv', 'wb') as csv_file:
-	writer = csv.writer(csv_file)
-	for itemp in sorted(pwords, key=pwords.get, reverse=True):
-		writer.writerow([itemp, pwords[itemp]])
-		print itemp, pwords[itemp]
-		totalpred = totalpred+pwords[itemp]
-print "------"
-print "in core:"
-with open('output-incore-words.csv', 'wb') as csv_file:
-	writer = csv.writer(csv_file)
-	for itemc in sorted(in_core, key=in_core.get, reverse=True):
-		writer.writerow([itemc, in_core[itemc]])
-		print itemc, in_core[itemc]
-		totalin_core = totalin_core+in_core[itemc]
-print "------"
-print "total chars:"
-with open('output-incore-words.csv', 'wb') as csv_file:
-	writer = csv.writer(csv_file)
-	for itemch in sorted(charcount, key=charcount.get, reverse=True): 
-		writer.writerow([itemch, charcount[itemch]])
-		print itemch, charcount[itemch]
-		totalchr = totalchr+charcount[itemch]
-print "total words:" + str(total)
-print "total chars:" + str(totalchr)
-print "words in core:" + str(len(in_core))
-print "total words (i.e. inc repeats) in core:" + str(totalin_core)
-print "avg word len:" +str(avgWordLen)
-print "avg wps:" + str(avg_wps)
-print "max wps:" + str(max_wps)
-print "predicted words:" + str(predicted_words)
-print "------"
-totalFreqScan = 0
-print "Letter count, Frequency, Letter, Scan Steps, FreqXScanSteps, "
-with open('output-freqfinal-words.csv', 'wb') as csv_file:
-	writer = csv.writer(csv_file)
-	writer.writerow(['Letter count', 'Frequency', 'Letter', 'Scan Steps', 'FreqXScanSteps' ])
-	for s in charcount: 
-		writer.writerow([str(float(charcount[s])),str(float(charcount[s])/totalchr),s, scan_steps[s], str((float(charcount[s])/totalchr) * scan_steps[s])])
-		print str(float(charcount[s])),',',str(float(charcount[s])/totalchr),',',s,',', scan_steps[s],',', str((float(charcount[s])/totalchr) * scan_steps[s])
-		totalFreqScan = totalFreqScan + ((float(charcount[s])/totalchr) * scan_steps[s])
-print "Total Frequency X Scan Steps:", totalFreqScan
+	# Outline your scan steps here
+	# Sams Scan Steps - with the extra hit
+	#scan_steps = {'e':2,'t':4,'o':7,'a':3,'n':9,'i':8,'s':5,'r':6,'h':4,'l':3,'d':8,'u':9,'w':4,'f':9,'m':5,'c':5,'g':7,'p':6,'b':8,'y':7,'k':6,'v':10,'x':6,'j':11,'z':7,'q':5}
+	# Heidis Scan steps - "Full" steps
+	scan_steps = { 'e':0,'t':2,'o':5,'a':1,'n':7,'i':6,'s':3,'r':4,'h':2,'l':1,'d':6,'u':7,'w':2,'f':7,'m':3,'c':3,'g':5,'p':4,'b':6,'y':5,'k':4,'v':8,'x':4,'j':9,'z':5,'q':3}
+
+	# Not using these - but we could use this to exclude common (core) words
+	# e.g http://ir.dcs.gla.ac.uk/resources/linguistic_utils/stop_words
+	# from an example at http://programminghistorian.org/lessons/counting-frequencies
+	stopwords = ['a', 'about', 'above', 'across', 'after', 'afterwards']
+	stopwords += ['again', 'against', 'all', 'almost', 'alone', 'along']
+
+	total = totalpred = totalin_core = totalchr = 0
+	avgWordLen, charcount, wordcount, avg_wps, max_wps, predicted_words, pwords, in_core = word_stats(vocab_file)
+	print("total words:")
+	with open('output-all-words.csv', 'w') as csv_file:
+		writer = csv.writer(csv_file)
+		for item in sorted(wordcount, key=wordcount.get, reverse=True):
+			writer.writerow([item, wordcount[item]])
+			print(item, wordcount[item])
+			total = total+wordcount[item]
+	print("------")
+	print("predicted words:")
+	with open('output-pred-words.csv', 'w') as csv_file:
+		writer = csv.writer(csv_file)
+		for itemp in sorted(pwords, key=pwords.get, reverse=True):
+			writer.writerow([itemp, pwords[itemp]])
+			print(itemp, pwords[itemp])
+			totalpred = totalpred+pwords[itemp]
+	print("------")
+	print("in core:")
+	with open('output-incore-words.csv', 'w') as csv_file:
+		writer = csv.writer(csv_file)
+		for itemc in sorted(in_core, key=in_core.get, reverse=True):
+			writer.writerow([itemc, in_core[itemc]])
+			print(itemc, in_core[itemc])
+			totalin_core = totalin_core+in_core[itemc]
+	print("------")
+	print("total chars:")
+	with open('output-incore-words.csv', 'w') as csv_file:
+		writer = csv.writer(csv_file)
+		for itemch in sorted(charcount, key=charcount.get, reverse=True): 
+			writer.writerow([itemch, charcount[itemch]])
+			print(itemch, charcount[itemch])
+			totalchr = totalchr+charcount[itemch]
+	print("total words:" + str(total))
+	print("total chars:" + str(totalchr))
+	print("words in core:" + str(len(in_core)))
+	print("total words (i.e. inc repeats) in core:" + str(totalin_core))
+	print("avg word len:" +str(avgWordLen))
+	print("avg wps:" + str(avg_wps))
+	print("max wps:" + str(max_wps))
+	print("predicted words:" + str(predicted_words))
+	print("------")
+	totalFreqScan = 0
+	print("Letter count, Frequency, Letter, Scan Steps, FreqXScanSteps, ")
+	with open('output-freqfinal-words.csv', 'w') as csv_file:
+		writer = csv.writer(csv_file)
+		writer.writerow(['Letter count', 'Frequency', 'Letter', 'Scan Steps', 'FreqXScanSteps' ])
+		for s in charcount: 
+			writer.writerow([str(float(charcount[s])),str(float(charcount[s])/totalchr),s, scan_steps[s], str((float(charcount[s])/totalchr) * scan_steps[s])])
+			print(str(float(charcount[s])),',',str(float(charcount[s])/totalchr),',',s,',', scan_steps[s],',', str((float(charcount[s])/totalchr) * scan_steps[s]))
+			totalFreqScan = totalFreqScan + ((float(charcount[s])/totalchr) * scan_steps[s])
+	print("Total Frequency X Scan Steps:", totalFreqScan)
+
+if __name__ == '__main__':
+	printStats()
+
