@@ -58,6 +58,5 @@ def mstotime(miliseconds):
 	s = "%i:%02i:%06.3f" % (hours, minutes, seconds)
 	return s
 
-
 if __name__ == '__main__':
     stepcount()
