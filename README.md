@@ -20,6 +20,7 @@ NB: Requires Python 3!
 then run whichever. e.g:
 
 `python VocabAnalysis.py --vocab-file path-to-file.txt`
+
 `python StepAnalysis.py --ssteps path-to-step-scanning-lib-file.txt --scanrate 1`
 
 
