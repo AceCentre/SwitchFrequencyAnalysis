@@ -4,7 +4,7 @@ import os.path
 import re
 
 @click.command()
-@click.option('--ssteps', default='steps.csv', help='Path to a csv of your scan steps')
+@click.option('--ssteps', type=click.Path(exists=True), default='scan-steps-lib/ssteps-eardu.csv', help='Path to a csv of your scan steps')
 @click.option('--scanrate', default=1000, help='Scan rate in ms')
 @click.option('--ignore-spaces', default=True, type=bool, help='Ignore spaces? Useful if you have no space in your layout')
 @click.option('--sentence', prompt='Test sentence:',

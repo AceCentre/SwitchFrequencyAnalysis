@@ -69,7 +69,7 @@ def removeStopwords(wordlist, stopwords):
     return [w for w in wordlist if w not in stopwords]
 
 @click.command()
-@click.option('--vocab-file', default='examples/vocab.txt', help='Path to a vocab file. String on each line. ')
+@click.option('--vocab-file', type=click.Path(exists=True), default='examples/vocab.txt', help='Path to a vocab file. String on each line. ')
 #@click.option('--scan_steps', default=scan_steps, type=bool, help='Ignore spaces? Useful if you have no space in your layout')
 @click.option('--inc-spaces', default=True, type=bool, help='Ignore spaces? Useful if you have no space in your layout')
 #@click.option('--stop-words', default=True, type=bool, help='Ignore spaces? Useful if you have no space in your layout')
