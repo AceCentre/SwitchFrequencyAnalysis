@@ -3,7 +3,7 @@ import csv
 import click
 import os.path
 
-def word_stats(file_name, ignore_spaces):
+def word_stats(file_name, ignore_spaces, remove_predicted):
 	import re
 	# balladin core_word_list
 	core_words = ["a", "can", "about", "cant", "actually", "car", "after", "catholic", "afternoon", "cause", "again", "close", "ago", "cold", "ah", "come", "all", "coming", "alright", "could", "always", "couldnt", "an", "couple", "and", "crew", "another", "day", "any", "days", "anything", "dear", "anyway", "did", "are", "didnt", "around", "different", "as", "do", "ask", "does", "at", "doesnt", "away", "doing", "back", "dollars", "bad", "done", "be", "dont", "beautiful", "down", "because", "dunno", "been", "eat", "before", "eight", "being", "either", "better", "eleven", "big", "else", "bit", "end", "bloody", "enough", "break", "er", "but", "even", "buy", "ever", "by", "every", "cake", "everyone", "came", "everything", "ey", "hour", "fair", "hours", "feel", "house", "find", "how", "finished", "hundred", "first", "i", "five", "if", "for", "in", "four", "into", "friday", "is", "from", "isnt", "fucking", "it", "get", "its", "gets", "its", "getting", "id", "give", "ill", "go", "im", "god", "ive", "goes", "job", "going", "just", "gone", "keep", "gonna", "kids", "good", "know", "got", "last", "gotta", "left", "had", "like", "half", "little", "happened", "live", "hard", "long", "has", "look", "have", "looking", "havent", "looks", "having", "lost", "he", "lot", "her", "love", "here", "lovely", "hell", "lunch", "hes", "made", "him", "make", "his", "many", "home", "married", "me", "people", "mean", "person", "might", "phone", "mind", "pick", "mine", "place", "minutes", "play", "mm", "pretty", "monday", "probably", "money", "put", "months", "quite", "more", "ready", "morning", "really", "much", "remember", "mum", "right", "must", "road", "my", "round", "name", "said", "need", "same", "never", "saturday", "new", "say", "next", "saying", "nice", "says", "night", "school", "no", "see", "not", "seen", "nothing", "seven", "now", "she", "of", "shell", "off", "shes", "oh", "shit", "ok", "shoes", "old", "should", "on", "sit", "once", "six", "one", "so", "ones", "some", "only", "someone", "or", "something", "other", "sorry", "our", "sort", "out", "start", "over", "started", "own", "still", "oclock", "straight", "past", "street", "pay", "stuff", "sure", "us", "take", "used", "talk", "very", "talking", "want", "tea", "wanted", "tell", "wants", "ten", "was", "than", "wasnt", "thanks", "way", "that", "we", "thats", "week", "the", "weekend", "their", "weeks", "them", "well", "then", "went", "there", "were", "theres", "were", "these", "weve", "they", "what", "theyre", "whats", "theyve", "when", "thing", "where", "things", "which", "think", "who", "thirty", "whos", "this", "why", "those", "will", "though", "with", "thought", "won", "three", "wont", "through", "work", "til", "working", "time", "would", "times", "wouldnt", "to", "wrong", "today", "yeah", "told", "year", "tomorrow", "years", "too", "yep", "try", "yes", "trying", "yesterday", "twelve", "you", "twenty", "your", "two", "youre", "um", "youve", "up"]
@@ -38,10 +38,16 @@ def word_stats(file_name, ignore_spaces):
 	chars = file.read()
 	# remove dodgy chars
 	# Bad code. Could do this a lot better if I spent 5 minutes
-	chars_filtered = re.sub(r"[0-9]+", '', chars.lower())
+	chars_filtered = re.sub(r"[0-9]+", '', chars)
 	chars_filtered = re.sub(r"#+", '', chars_filtered)
 	chars_filtered = re.sub(r"'+", '', chars_filtered)
 	chars_filtered = re.sub(r"\/+", '', chars_filtered)
+
+	if remove_predicted:
+		chars_filtered = re.sub(r"[A-Z]+", '', chars_filtered)
+	else:
+		chars_filtered = chars_filtered.lower()
+
 	# ignore spaces?
 	if ignore_spaces:
 		chars_filtered = re.sub(r"\s+", '', chars_filtered)
@@ -77,10 +83,11 @@ def removeStopwords(wordlist, stopwords):
 @click.option('--ignore-spaces', default=True, type=bool, help='Ignore spaces? Useful if you have no space in your layout')
 @click.option('--ssteps', type=click.Path(exists=True), default='scan-steps-lib/ssteps-eardu.csv', help='Path to a csv of your scan steps')
 @click.option('--stop-words', default=False, type=bool, help='Ignore spaces? Useful if you have no space in your layout')
+@click.option('--remove-predicted', default=False, type=bool, help='Remove predicted letters? i.e. ignore anything uppercased')
 
 # Open file.
 #  NB: Each line is a sentence. Only uppercase letters which have been predicted by a partner - INCLUDING first letters
-def printStats(vocab_file, ignore_spaces, ssteps, stop_words):
+def printStats(vocab_file, ignore_spaces, ssteps, stop_words, remove_predicted):
 
 	# Outline your scan steps here
 	# Sams Scan Steps - with the extra hit
@@ -102,7 +109,7 @@ def printStats(vocab_file, ignore_spaces, ssteps, stop_words):
 	stopwords += ['again', 'against', 'all', 'almost', 'alone', 'along']
 
 	total = totalpred = totalin_core = totalchr = 0
-	avgWordLen, charcount, wordcount, avg_wps, max_wps, predicted_words, pwords, in_core = word_stats(vocab_file, ignore_spaces)
+	avgWordLen, charcount, wordcount, avg_wps, max_wps, predicted_words, pwords, in_core = word_stats(vocab_file, ignore_spaces, remove_predicted)
 	print("total words:")
 	with open('output-all-words.csv', 'w') as csv_file:
 		writer = csv.writer(csv_file)
