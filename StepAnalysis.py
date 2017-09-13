@@ -8,18 +8,18 @@ import re
 @click.option('--scanrate', default=1000, help='Scan rate in ms')
 @click.option('--output-type', default='all', help='All, Lesher, Damper, Steps, Hits, show-workings, show-predictions, csv-all')
 @click.option('--ignore-spaces', default=True, type=bool, help='Ignore spaces? Useful if you have no space in your layout')
-@click.option('--ignore-predictions', default=False, type=bool, help='Ignore predictions? i.e. ignore anything uppercased')
+@click.option('--remove-predicted', default=False, type=bool, help='Remove predicted letters? i.e. ignore anything uppercased')
 @click.option('--prediction-time', default=0, help='How long does it take the person to select a prediction on average? in ms. NB: Ignored if ignored-predictions is True')
 @click.option('--sentence', prompt='Test sentence:',
 				help='Enter your test sentence here')
 
-def stepcount(ssteps, scanrate, ignore_spaces , ignore_predictions, prediction_time, sentence, output_type):
+def stepcount(ssteps, scanrate, ignore_spaces , remove_predicted, prediction_time, sentence, output_type):
 	"""Takes a switch step count and a sentence and display number of steps to get there"""
 	letterfreq = dict()
 	sum = t_lesher = t_damper = sum_pred_letters = sum_pred_words = sum_words = 0
 	show_workings = ''
 	# remove dodgy chars
-	# Bad code. Could do this a lot better if I spent 5 minutes 
+	# Bad code. Could do this a lot better if I spent 5 minutes
 	s_filtered = re.sub(r"[0-9]+", '', sentence)
 	s_filtered = re.sub(r"#+", '', s_filtered)
 	s_filtered = re.sub(r"'+", '', s_filtered)
@@ -30,16 +30,16 @@ def stepcount(ssteps, scanrate, ignore_spaces , ignore_predictions, prediction_t
 		len_ucase_str = len(re.findall(r'[A-Z]',word))
 		sum_pred_letters = sum_pred_letters + len_ucase_str
 		sum_pred_words = sum_pred_words +1 if len_ucase_str > 0  else sum_pred_words
-	
+
 	# ignore predictions?
-	if ignore_predictions:
+	if remove_predicted:
 		s_filtered = re.sub(r"[A-Z]+", '', s_filtered)
 
 	s_filtered = s_filtered.lower()
-	
+
 	#calc word count
 	sum_words = len(re.findall(r"\s+",s_filtered))+1
-	
+
 	# ignore spaces?
 	if ignore_spaces:
 		s_filtered = re.sub(r"\s+", '', s_filtered)
@@ -47,9 +47,9 @@ def stepcount(ssteps, scanrate, ignore_spaces , ignore_predictions, prediction_t
 		s_filtered = re.sub(r"\s+", '_', s_filtered)
 
 
-	
+
 	strlen = len(s_filtered)
-			
+
 	if os.path.isfile(ssteps):
 		with open(ssteps, 'rt') as f:
 			reader = csv.DictReader(f)
@@ -61,19 +61,19 @@ def stepcount(ssteps, scanrate, ignore_spaces , ignore_predictions, prediction_t
 			t_lesher = t_lesher + ((float(letterfreq[n])+2)*scanrate)
 			t_damper = t_damper + ((float(letterfreq[n])+1)*scanrate)
 			show_workings = show_workings + n +' ' + letterfreq[n] + ', '
-		
-		if ignore_predictions == False :
+
+		if remove_predicted == False :
 			t_lesher = t_lesher + sum_pred_words * prediction_time
 			t_damper = t_damper + sum_pred_words * prediction_time
 			show_workings = show_workings +  ' AND add sum of predicted words ('+ str(+sum_pred_words)+') * prediction_time (' + str(prediction_time) + ')'
-				
+
 		if ('csv-all' in output_type):
-			# print a csv of all data.. 
+			# print a csv of all data..
 			# headers = 'steps, hits, lesher (ms), damper (ms), no-hit (ms), predicted words, predicted letters, wordcount
 			csv_line = str(sum) + ',' + str(strlen*2) + ',' + str(t_lesher) + ',' + str(t_damper) + ',' + str((sum)*scanrate) + ',' + str(sum_pred_words) + ',' + str(sum_pred_letters) + ',' + str(sum_words)
-			print(csv_line)			
-		
-		if ('Stats' in output_type or output_type == 'all'):		
+			print(csv_line)
+
+		if ('Stats' in output_type or output_type == 'all'):
 			print('Full steps:'+str(sum))
 			# ss  100 (nb  na)/nb
 			# nb - scan steps. na = augmented switch count.
@@ -90,12 +90,12 @@ def stepcount(ssteps, scanrate, ignore_spaces , ignore_predictions, prediction_t
 			print('No. of predicted letters '+ str(sum_pred_letters))
 		if ('show-workings' in output_type or output_type == 'all'):
 			show_workings = 'string: ' + s_filtered + ' -> ' + show_workings + ' = Total steps of '+ str(sum) + '. Lesher Time = Σ (each step + 2) * scanrate (i.e. '+ str(scanrate) + ')'
-			if ignore_predictions == False :
+			if remove_predicted == False :
 				show_workings = show_workings +  ' AND add sum of predicted words ('+ str(+sum_pred_words)+') * prediction_time (' + str(prediction_time) + ')'
 			print('Show workings:'+show_workings)
 	else:
 		return None
-		
+
 
 def mstotime(miliseconds):
 	hours, milliseconds = divmod(miliseconds, 3600000)
