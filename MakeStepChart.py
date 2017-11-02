@@ -37,9 +37,7 @@ def hasNumbers(inputString):
 @click.option('--rows', default=6, help='Rows')
 @click.option('--startat', default=2, help='What should the first element start at? 0? 1? 2?')
 @click.option('--newfile', default='scan-steps-lib/ssteps-phrase-nn.csv', help='Name the new file')
-@click.option('--ignore-let-less', default=30, help='ignore letters less than n length')
-
-
+@click.option('--ignore-let-less', default=2, help='ignore letters less than n length')
 
 def mapfreqtotable(freqtable,columns,rows,startat,newfile,ignore_let_less):
 
@@ -53,7 +51,13 @@ def mapfreqtotable(freqtable,columns,rows,startat,newfile,ignore_let_less):
 	if os.path.isfile(freqtable):
 		with open(freqtable, "rt", encoding='utf-8') as csvfile:
 			reader = csv.reader(csvfile)
-			for i, line in enumerate(reader):
+			alines = []
+			for d, x in enumerate(reader):
+				if (len(x[0]) >= ignore_let_less):
+					alines.append(x)
+					
+			for i, line in enumerate(alines):
+				print(line)
 				# this is a bit naff. Gets the header names
 				if (i == 0):
 					fieldnames = ['Letter','Scan Steps']

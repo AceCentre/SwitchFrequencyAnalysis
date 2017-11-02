@@ -21,9 +21,11 @@ NB: Requires Python 3!
 
 then run whichever. e.g:
 
-`python VocabAnalysis.py --vocab-file path-to-file.txt`
+`python3 VocabAnalysis.py --vocab-file path-to-file.txt`
 
-`python StepAnalysis.py --ssteps path-to-step-scanning-lib-file.txt --scanrate 1`
+`python3 StepAnalysis.py --ssteps path-to-step-scanning-lib-file.txt --scanrate 1`
+
+`python3 MakeStepChart.py --columns 6 --rows 6 --freqtable path-to-freqtable.csv --startat 2`
 
 ## Common usages
 
