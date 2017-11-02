@@ -113,6 +113,7 @@ def printStats(vocab_file, ignore_spaces, ssteps, stop_words, remove_predicted):
 	print("total words:")
 	with open('output-all-words.csv', 'w') as csv_file:
 		writer = csv.writer(csv_file)
+		writer.writerow(['phrase','freq'])
 		for item in sorted(wordcount, key=wordcount.get, reverse=True):
 			writer.writerow([item, wordcount[item]])
 			print(item, wordcount[item])
