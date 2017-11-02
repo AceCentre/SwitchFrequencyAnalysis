@@ -10,7 +10,8 @@ Whats in here:
 3. TotalStepAnalysis.py. Read in a scan step csv and provide a vocab file (and if you wish a scan rate) and will give estimates for time to take to write the entire vocab.
 4. scan-steps-lib/ a library of scan steps for different layouts. 
 5. Mapper/ - a funky script that tries to show you what a frequency list would like in a grid you make. 
-
+6. AddSteps.py Takes in a scan step csv chart (letter/phrase|steps\n) and a frequency list (phrase|frequency(count)\n) and adds a new column to the frequency chart of the steps to the steps to write the phrase with this scan step layout.
+7. MakeStepChart.py Makes a step chart in a block of n x n cols and rows. Outputs to a csv of phrase|step
 
 ### To run
 
@@ -23,6 +24,13 @@ then run whichever. e.g:
 `python VocabAnalysis.py --vocab-file path-to-file.txt`
 
 `python StepAnalysis.py --ssteps path-to-step-scanning-lib-file.txt --scanrate 1`
+
+## Common usages
+
+1. You have a vocabulary file that you want to analyse. Run VocabAnalysis.py - it will output some csv files - that you can then use to analyse the frequency of word and letter use
+2. You want to convert a ordered list of words or letters (in frequency order) and give a suggestion of the scan steps in a n x n block. Run MakeStepChart 
+3. You want to Add these steps to your frequency list so you can compare different scan steps. Run AddSteps.py
+4. You want to an estimation of time and efficiency between scan steps and a test sentences(s). Run StepAnalysis. If you want to do across a whole bunch of Scan Step layouts look at TotalStepAnalysis
 
 
 ### To-Do:
