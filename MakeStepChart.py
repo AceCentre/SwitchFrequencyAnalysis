@@ -35,9 +35,9 @@ def hasNumbers(inputString):
 @click.option('--freqtable', type=click.Path(exists=True), default='output-all-words.csv', help='Path to a csv of your words|frequency csv')
 @click.option('--columns', default=6, help='Columns')
 @click.option('--rows', default=6, help='Rows')
-@click.option('--startat', default=2, help='What should the first element start at? 0? 1? 2?')
+@click.option('--startat', default=0, help='What should the first element start at? 0? 1? 2?')
 @click.option('--newfile', default='scan-steps-lib/ssteps-phrase-nn.csv', help='Name the new file')
-@click.option('--ignore-let-less', default=2, help='ignore letters less than n length')
+@click.option('--ignore-let-less', default=0, help='ignore letters less than n length')
 
 def mapfreqtotable(freqtable,columns,rows,startat,newfile,ignore_let_less):
 
