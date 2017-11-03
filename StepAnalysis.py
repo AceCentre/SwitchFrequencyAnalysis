@@ -122,9 +122,9 @@ def stepcount(ssteps, ssteps_phrases, scanrate, ignore_spaces , remove_predicted
 			print('No. of predicted words '+ str(sum_pred_words))
 			print('No. of predicted letters '+ str(sum_pred_letters))
 		if ('show-workings' in output_type or output_type == 'all'):
-			show_workings = 'string: ' + s_filtered + ' -> ' + show_workings + ' = Total steps of '+ str(sum) + '. Lesher Time = Σ (each step + 2) * scanrate (i.e. '+ str(scanrate) + ')'
+			show_workings = 'string: ' + s_filtered + ' -> ' + show_workings + ' = Total steps of '+ str(sum) + '.\n Lesher Time = Σ (each step + 2) * scanrate (i.e. '+ str(scanrate) + ')\n'
 			if remove_predicted == False :
-				show_workings = show_workings +  ' AND add sum of predicted words ('+ str(+sum_pred_words)+') * prediction_time (' + str(prediction_time) + ')'
+				show_workings = show_workings +  '               AND add sum of predicted words ('+ str(+sum_pred_words)+') * prediction_time (' + str(prediction_time) + ')'
 			print('Show workings:'+show_workings)
 	else:
 		return None
