@@ -49,7 +49,7 @@ def stepcount(ssteps, ssteps_phrases, scanrate, ignore_spaces , remove_predicted
 			for row in reader:
 				wordblock[row['Letter']]=row['Scan Steps']
 
-	phrase_steps = 0
+	phrase_steps = phrase_hits = 0
 	all_words = s_filtered.split(' ')
 	non_blockedwords = list()
 	for word in all_words:
@@ -60,6 +60,7 @@ def stepcount(ssteps, ssteps_phrases, scanrate, ignore_spaces , remove_predicted
 				word = word[:-1]
 			# strip word from s_filtered and add the 
 			phrase_steps = phrase_steps + int(wordblock[word])
+			phrase_hits = phrase_hits + 2
 		else:
 			non_blockedwords.append(word)
 
@@ -74,7 +75,7 @@ def stepcount(ssteps, ssteps_phrases, scanrate, ignore_spaces , remove_predicted
 
 	strlen = len(s_filtered)
 	
-
+	
 	if os.path.isfile(ssteps):
 		with open(ssteps, 'rt') as f:
 			reader = csv.DictReader(f)
@@ -110,7 +111,7 @@ def stepcount(ssteps, ssteps_phrases, scanrate, ignore_spaces , remove_predicted
 			# ss  100 (nb  na)/nb
 			# nb - scan steps. na = augmented switch count.
 			# 2 hits per letter. Its always that way
-			print('Switch hits (auto scan - auto start):'+str(strlen*2))
+			print('Switch hits (auto scan - auto start):'+str(strlen*2+phrase_hits))
 		if (('Lesher' in output_type) or (output_type == 'all')):
 			print('Lesher time (H:M:S.ms), '+mstotime(t_lesher))
 		if ('Damper' in output_type or output_type == 'all'):
