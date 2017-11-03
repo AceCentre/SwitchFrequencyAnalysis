@@ -5,15 +5,15 @@ import re
 
 @click.command()
 @click.option('--ssteps', type=click.Path(exists=True), default='scan-steps-lib/ssteps-eardu.csv', help='Path to a csv of your scan steps')
+@click.option('--ssteps-phrases', type=click.Path(), default='', help='Path to a csv of a second scan steps file. Should be whole words')
 @click.option('--scanrate', default=1000, help='Scan rate in ms')
 @click.option('--output-type', default='all', help='All, Lesher, Damper, Steps, Hits, show-workings, show-predictions, csv-all')
 @click.option('--ignore-spaces', default=True, type=bool, help='Ignore spaces? Useful if you have no space in your layout')
 @click.option('--remove-predicted', default=False, type=bool, help='Remove predicted letters? i.e. ignore anything uppercased')
 @click.option('--prediction-time', default=0, help='How long does it take the person to select a prediction on average? in ms. NB: Ignored if ignored-predictions is True')
-@click.option('--sentence', prompt='Test sentence:',
-				help='Enter your test sentence here')
+@click.option('--sentence', prompt='Test sentence:',help='Enter your test sentence here')
 
-def stepcount(ssteps, scanrate, ignore_spaces , remove_predicted, prediction_time, sentence, output_type):
+def stepcount(ssteps, ssteps_phrases, scanrate, ignore_spaces , remove_predicted, prediction_time, sentence, output_type):
 	"""Takes a switch step count and a sentence and display number of steps to get there"""
 	letterfreq = dict()
 	sum = t_lesher = t_damper = sum_pred_letters = sum_pred_words = sum_words = 0
@@ -40,21 +40,53 @@ def stepcount(ssteps, scanrate, ignore_spaces , remove_predicted, prediction_tim
 	#calc word count
 	sum_words = len(re.findall(r"\s+",s_filtered))+1
 
+
+	wordblock = {}
+	# Second scan step file
+	if os.path.isfile(ssteps_phrases):
+		with open(ssteps_phrases, 'rt') as cw:
+			reader = csv.DictReader(cw)
+			for row in reader:
+				wordblock[row['Letter']]=row['Scan Steps']
+
+	phrase_steps = 0
+	all_words = s_filtered.split(' ')
+	non_blockedwords = list()
+	for word in all_words:
+		if word in wordblock:
+			# the phrases need to have _ to correctly measure space but we dont want it
+			#   for this analysis
+			if word.endswith('_'):
+				word = word[:-1]
+			# strip word from s_filtered and add the 
+			phrase_steps = phrase_steps + int(wordblock[word])
+		else:
+			non_blockedwords.append(word)
+
+	# Now turn non_blockedwords back into s_filtered
+	s_filtered = '_'.join(non_blockedwords)
+
 	# ignore spaces?
 	if ignore_spaces:
 		s_filtered = re.sub(r"\s+", '', s_filtered)
 	else:
 		s_filtered = re.sub(r"\s+", '_', s_filtered)
 
-
-
 	strlen = len(s_filtered)
+	
 
 	if os.path.isfile(ssteps):
 		with open(ssteps, 'rt') as f:
 			reader = csv.DictReader(f)
 			for row in reader:
 				letterfreq[row['Letter']]=row['Scan Steps']
+		# Lets first get the phrase steps 
+		if (phrase_steps>0):
+			sum = float(phrase_steps)
+			t_lesher = t_lesher + ((float(phrase_steps)+2)*scanrate)
+			t_damper = t_damper + ((float(phrase_steps)+1)*scanrate)
+			show_workings = str(phrase_steps)+ ' steps to say words in core block. '+'\n'
+
 		# Now we have the letter freq chart lets do our sums on this with our test sentences
 		for n in s_filtered:
 			sum = sum + float(letterfreq[n])

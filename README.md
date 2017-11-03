@@ -27,6 +27,9 @@ then run whichever. e.g:
 
 `python3 MakeStepChart.py --columns 6 --rows 6 --freqtable path-to-freqtable.csv --startat 2`
 
+`python3 StepAnalysis.py --ssteps path-to-step-scanning-lib-file.txt --ignore-spaces False --ssteps-phrases scan-steps-lib/ssteps-phrase-6x6.csv `
+
+
 ## Common usages
 
 1. You have a vocabulary file that you want to analyse. Run VocabAnalysis.py - it will output some csv files - that you can then use to analyse the frequency of word and letter use
