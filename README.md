@@ -9,7 +9,7 @@ Whats in here:
 2. StepAnalysis.py. Read in a scan step csv and provide a test sentence (and if you wish a scan rate) and will give estimates for time to take to write this message.
 3. TotalStepAnalysis.py. Read in a scan step csv and provide a vocab file (and if you wish a scan rate) and will give estimates for time to take to write the entire vocab.
 4. scan-steps-lib/ a library of scan steps for different layouts. 
-5. Mapper/ - a funky script that tries to show you what a frequency list would like in a grid you make. 
+5. Mapper/ - a funky script that tries to show you what a frequency list would like in a grid you make. NB: Very work in progress. Dont get your hopes up! 
 6. AddSteps.py Takes in a scan step csv chart (letter/phrase|steps\n) and a frequency list (phrase|frequency(count)\n) and adds a new column to the frequency chart of the steps to the steps to write the phrase with this scan step layout.
 7. MakeStepChart.py Makes a step chart in a block of n x n cols and rows. Outputs to a csv of phrase|step
 
