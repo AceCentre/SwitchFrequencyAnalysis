@@ -23,19 +23,20 @@ def hasNumbers(inputString):
 
 @click.command()
 @click.option('--ssteps', type=click.Path(exists=True), default='scan-steps-lib/ssteps-eardu.csv', help='Path to a csv of your scan steps')
+@click.option('--ssteps-add', default=0, help='Want to increment the scan step amount?')
 @click.option('--freqtable', type=click.Path(exists=True), default='output-all-words.csv', help='Path to a csv of your words|frequency csv')
 @click.option('--sstep-type', default='Letters', help='Letters or Phrases')
 @click.option('--write-to-col', default='', help='Wamt to write the scan steps in a new column? Provide the string of the title here ')
 @click.option('--addspace', default=False, help='Add a space at the end of each phrase?')
 
-def stepcalc(ssteps,freqtable,sstep_type,write_to_col,addspace):
+def stepcalc(ssteps,ssteps_add,freqtable,sstep_type,write_to_col,addspace):
 	# Get Scan Steps
 	letterfreq = freqlist = dict()
 	if os.path.isfile(ssteps):
 		with open(ssteps, 'rt') as f:
 			reader = csv.DictReader(f)
 			for row in reader:
-				letterfreq[row['Letter']]=row['Scan Steps']
+				letterfreq[row['Letter']]=str(int(row['Scan Steps'])+ssteps_add)
 
 	# Now get each word
 	# We cant read and write at same time 

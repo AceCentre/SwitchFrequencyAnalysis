@@ -5,6 +5,7 @@ import re
 
 @click.command()
 @click.option('--ssteps', type=click.Path(exists=True), default='scan-steps-lib/ssteps-eardu.csv', help='Path to a csv of your scan steps')
+@click.option('--ssteps-add', type=int, default=0, help='Increment the scan steps')
 @click.option('--ssteps-phrases', type=click.Path(), default='', help='Path to a csv of a second scan steps file. Should be whole words')
 @click.option('--scanrate', default=1000, help='Scan rate in ms')
 @click.option('--output-type', default='all', help='All, Lesher, Damper, Steps, Hits, show-workings, show-predictions, csv-all')
@@ -13,7 +14,7 @@ import re
 @click.option('--prediction-time', default=0, help='How long does it take the person to select a prediction on average? in ms. NB: Ignored if ignored-predictions is True')
 @click.option('--sentence', prompt='Test sentence:',help='Enter your test sentence here')
 
-def stepcount(ssteps, ssteps_phrases, scanrate, ignore_spaces , remove_predicted, prediction_time, sentence, output_type):
+def stepcount(ssteps, ssteps_add, ssteps_phrases, scanrate, ignore_spaces , remove_predicted, prediction_time, sentence, output_type):
 	"""Takes a switch step count and a sentence and display number of steps to get there"""
 	letterfreq = dict()
 	sum = t_lesher = t_damper = sum_pred_letters = sum_pred_words = sum_words = 0
@@ -47,7 +48,7 @@ def stepcount(ssteps, ssteps_phrases, scanrate, ignore_spaces , remove_predicted
 		with open(ssteps_phrases, 'rt') as cw:
 			reader = csv.DictReader(cw)
 			for row in reader:
-				wordblock[row['Letter']]=row['Scan Steps']
+				wordblock[row['Letter']]=str(int(row['Scan Steps'])+ssteps_add)
 
 	phrase_steps = phrase_hits = 0
 	all_words = s_filtered.split(' ')
