@@ -82,12 +82,13 @@ def removeStopwords(wordlist, stopwords):
 @click.option('--vocab-file', type=click.Path(exists=True), default='examples/vocab.txt', help='Path to a vocab file. String on each line. ')
 @click.option('--ignore-spaces', default=True, type=bool, help='Ignore spaces? Useful if you have no space in your layout')
 @click.option('--ssteps', type=click.Path(exists=True), default='scan-steps-lib/ssteps-eardu.csv', help='Path to a csv of your scan steps')
+@click.option('--ssteps-add', type=int, default=0, help='Increment the scan steps')
 @click.option('--stop-words', default=False, type=bool, help='Ignore spaces? Useful if you have no space in your layout')
 @click.option('--remove-predicted', default=False, type=bool, help='Remove predicted letters? i.e. ignore anything uppercased')
 
 # Open file.
 #  NB: Each line is a sentence. Only uppercase letters which have been predicted by a partner - INCLUDING first letters
-def printStats(vocab_file, ignore_spaces, ssteps, stop_words, remove_predicted):
+def printStats(vocab_file, ignore_spaces, ssteps, ssteps_add, stop_words, remove_predicted):
 
 	# Outline your scan steps here
 	# Sams Scan Steps - with the extra hit
@@ -99,7 +100,7 @@ def printStats(vocab_file, ignore_spaces, ssteps, stop_words, remove_predicted):
 		with open(ssteps, 'rt') as f:
 			reader = csv.DictReader(f)
 			for row in reader:
-				scan_steps[row['Letter']]=row['Scan Steps']
+				scan_steps[row['Letter']]=str(int(row['Scan Steps'])+ssteps_add)
 
 
 	# Not using these - but we could use this to exclude common (core) words

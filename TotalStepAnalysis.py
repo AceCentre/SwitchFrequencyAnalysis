@@ -17,14 +17,15 @@ def mstotime(ms):
 @click.option('--layouts', default='all', help='Which layouts do you want parsing? all, aeiou, abcd, db, eardu, qwerty, dbfreq')
 @click.option('--text', default="""the quick brown fox jumped over the lazy dog""", help='a line of text to analyse. NB: ignored if text file provided')
 @click.option('--scanrate', default=1000, help='Scan rate in ms')
+@click.option('--ssteps-add', default=0, help='Want to increment the scan step amount?')
 @click.option('--ignore-spaces', default=False, type=bool, help='Ignore spaces? Useful if you have no space in your layout')
 @click.option('--remove-predicted', default=False, type=bool, help='Remove predicted letters? i.e. ignore anything uppercased')
 @click.option('--prediction-time', default=500, help='How long does it take the person to select a prediction on average? in ms. NB: Ignored if ignored-predictions is True')
 
 
-def textAnalyse(text_file, layouts, text, scanrate, ignore_spaces , remove_predicted, prediction_time):
+def textAnalyse(text_file, layouts, text, scanrate, ssteps_add, ignore_spaces , remove_predicted, prediction_time):
 	python_bin = '/usr/local/bin/python3'
-	base_cmd = python_bin + '  StepAnalysis.py --ssteps scan-steps-lib/ssteps-nnnn.csv --ignore-spaces '+str(ignore_spaces)+' --remove-predicted '+str(remove_predicted)+' --prediction-time '+str(prediction_time)+' --output-type csv-all --sentence '
+	base_cmd = python_bin + '  StepAnalysis.py --ssteps scan-steps-lib/ssteps-nnnn.csv --ssteps-add '+ str(ssteps_add)+' --ignore-spaces '+str(ignore_spaces)+' --remove-predicted '+str(remove_predicted)+' --prediction-time '+str(prediction_time)+' --output-type csv-all --sentence '
 
 	if text_file != '':
 		if os.path.exists(text_file):
@@ -146,7 +147,7 @@ def textAnalyse(text_file, layouts, text, scanrate, ignore_spaces , remove_predi
 				print(line+',db,'+db.strip())
 			if (('dbfreq' in layouts) or (layouts == 'all')):
 				dbfreq_cmd = base_cmd.replace("nnnn", "dbfreq")
-				db = subprocess.Popen(dbfreq_cmd + '"'+line+'"', shell=True, stdout=subprocess.PIPE).stdout.read().decode("utf-8")
+				dbfreq = subprocess.Popen(dbfreq_cmd + '"'+line+'"', shell=True, stdout=subprocess.PIPE).stdout.read().decode("utf-8")
 				print(line+',dbfreq,'+dbfreq.strip())
 			if (('qwerty' in layouts) or (layouts == 'all')):
 				qwerty_cmd = base_cmd.replace("nnnn", "qwerty")
