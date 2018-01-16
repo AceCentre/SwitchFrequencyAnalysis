@@ -10,11 +10,12 @@ import re
 @click.option('--scanrate', default=1000, help='Scan rate in ms')
 @click.option('--output-type', default='all', help='All, Lesher, Damper, Steps, Hits, show-workings, show-predictions, csv-all')
 @click.option('--ignore-spaces', default=True, type=bool, help='Ignore spaces? Useful if you have no space in your layout')
+@click.option('--ignore-predicted', default=True, type=bool, help='Ignore predicted letters? i.e. anything uppercased gets lowercased and assumed he spoke it')
 @click.option('--remove-predicted', default=False, type=bool, help='Remove predicted letters? i.e. ignore anything uppercased')
 @click.option('--prediction-time', default=0, help='How long does it take the person to select a prediction on average? in ms. NB: Ignored if ignored-predictions is True')
 @click.option('--sentence', prompt='Test sentence:',help='Enter your test sentence here')
 
-def stepcount(ssteps, ssteps_add, ssteps_phrases, scanrate, ignore_spaces , remove_predicted, prediction_time, sentence, output_type):
+def stepcount(ssteps, ssteps_add, ssteps_phrases, scanrate, ignore_spaces , ignore_predicted, remove_predicted, prediction_time, sentence, output_type):
 	"""Takes a switch step count and a sentence and display number of steps to get there"""
 	letterfreq = dict()
 	sum = t_lesher = t_damper = sum_pred_letters = sum_pred_words = sum_words = 0
@@ -32,16 +33,21 @@ def stepcount(ssteps, ssteps_add, ssteps_phrases, scanrate, ignore_spaces , remo
 		sum_pred_letters = sum_pred_letters + len_ucase_str
 		sum_pred_words = sum_pred_words +1 if len_ucase_str > 0  else sum_pred_words
 
-	# ignore predictions?
+	# remove predictions?
+	#  NB: Its critical it gets called here. 
+	#   Its a dumb option really because remove_predicted and ignore_predicted cancel each other out
+	if ignore_predicted:
+		s_filtered = s_filtered.lower()
+
+	# remove predictions?
 	if remove_predicted:
 		s_filtered = re.sub(r"[A-Z]+", '', s_filtered)
 
 	s_filtered = s_filtered.lower()
 
 	#calc word count
-	sum_words = len(re.findall(r"\s+",s_filtered))+1
-
-
+	sum_words = len(re.findall("[\w'-]+",s_filtered))
+	
 	wordblock = {}
 	# Second scan step file
 	if os.path.isfile(ssteps_phrases):
