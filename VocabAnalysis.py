@@ -53,14 +53,15 @@ def word_stats(file_name, ignore_spaces, remove_predicted):
 		chars_filtered = re.sub(r"\s+", '', chars_filtered)
 	else:
 		chars_filtered = re.sub(r"\s+", '_', chars_filtered)
+		
 
 	# Word count
-	words = re.findall('\w+', chars.lower())
+	words = re.findall("[\w'-]+", chars.lower())
 	avgWordLen = sum(map(len, words))/len(words)
 	from collections import Counter
 	charcount = Counter(chars_filtered)
 	wordcount = Counter(words)
-	return int(avgWordLen), charcount, wordcount, avg_wps, max_wps, predicted_words, pwords, in_core
+	return float(avgWordLen), charcount, wordcount, avg_wps, max_wps, predicted_words, pwords, in_core
 
 
 # Ignore all letters after an uppercase character
