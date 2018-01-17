@@ -13,6 +13,7 @@ def word_stats(file_name, ignore_spaces, remove_predicted):
 	words_per_sentence = []
 	pwords = dict()
 	in_core = dict()
+	words = []
 	for line in lines:
 		if any(s.isupper() for s in line):
 			wordss = re.findall('\w+', line)
@@ -48,15 +49,20 @@ def word_stats(file_name, ignore_spaces, remove_predicted):
 	else:
 		chars_filtered = chars_filtered.lower()
 
-	# ignore spaces?
-	if ignore_spaces:
-		chars_filtered = re.sub(r"\s+", '', chars_filtered)
-	else:
-		chars_filtered = re.sub(r"\s+", '_', chars_filtered)
-		
-
-	# Word count
-	words = re.findall("[\w'-]+", chars.lower())
+	#Lets deal with lines
+	# We don't want to treat a linebreak as a space
+	lines = chars_filtered.splitlines()
+	
+	for i, line in enumerate(lines):
+		# Word count
+		words.extend(re.findall("[\w'-]+", line))
+		# ignore spaces?
+		if ignore_spaces:
+			lines[i] = re.sub(r"\s+", '', line)
+		else:
+			lines[i] = re.sub(r"\s+", '_', line)
+	
+	chars_filtered = ''.join(lines)
 	avgWordLen = sum(map(len, words))/len(words)
 	from collections import Counter
 	charcount = Counter(chars_filtered)
