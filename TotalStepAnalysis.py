@@ -39,7 +39,7 @@ def textAnalyse(text_file, layouts, text, scanrate, ssteps_add, ignore_spaces , 
 	if (layouts == 'csvns'):
 		print('line, predicted words, predicted letters, wordcount, hits,  dbNS-steps,  dbNS-lesher (ms), dbNS-damper (ms), dbfreqNS-steps, dbfreqNS-lesher, dbfreqNS-damper (ms), qwerty-steps, qwerty-lesher (ms), qwerty-damper (ms),eardu-steps, eardu-lesher (ms), eardu-damper (ms)')
 
-	if (layouts == 'csv'):
+	elif (layouts == 'csv'):
 		print('line, predicted words, predicted letters, wordcount, hits,  abcd-steps,  abcd-lesher (ms), abcd-damper (ms), db-steps,  db-lesher (ms), db-damper (ms), dbNS-steps,  dbNS-lesher (ms), dbNS-damper (ms), dbfreq-steps, dbfreq-lesher (ms), dbfreq-damper (ms), dbfreqNS-steps, dbfreqNS-lesher, dbfreqNS-damper (ms), qwerty-steps, qwerty-lesher (ms), qwerty-damper (ms), qwertyNS-steps, qwertyNS-lesher (ms), qwertyNS-damper (ms), aeiou-steps, aeiou-lesher (ms), aeiou-damper (ms),eardu-steps, eardu-lesher (ms), eardu-damper (ms), earduNS-steps, earduNS-lesher (ms), earduNS-damper (ms)')
 	else:
 		print('line, layout, steps, hits, lesher (ms), damper (ms), no-hit (ms), predicted words, predicted letters, wordcount')
