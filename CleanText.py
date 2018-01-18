@@ -12,13 +12,11 @@ def textClean(text_file, remove_eol, save_as):
 	with open(text_file, 'r') as myfile:
 		data=myfile.read()
 		data = re.sub(r"[^a-zA-Z\s]",'',data)
-		# This isnt working.. 
-		data = re.sub(r"([^ \t\r\n])[ \t]+$",r"\1",data)
-		# sed -i 's/[ \t]*$//' "$1" - this will have to do
 		
 	with open(save_as,'w') as save_file:
-		for line in data:
-			save_file.write(line)
+		lines = data.splitlines()
+		for line in lines:
+			save_file.write(line.strip()+'\n')
 	save_file.close() 
 	
 	
