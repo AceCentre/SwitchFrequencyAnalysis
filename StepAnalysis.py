@@ -26,6 +26,7 @@ def stepcount(ssteps, ssteps_add, ssteps_phrases, scanrate, ignore_spaces , igno
 	s_filtered = re.sub(r"#+", '', s_filtered)
 	s_filtered = re.sub(r"'+", '', s_filtered)
 	s_filtered = re.sub(r"\/+", '', s_filtered)
+	
 
 	# predictions?
 	for word in s_filtered.split():
@@ -33,9 +34,10 @@ def stepcount(ssteps, ssteps_add, ssteps_phrases, scanrate, ignore_spaces , igno
 		sum_pred_letters = sum_pred_letters + len_ucase_str
 		sum_pred_words = sum_pred_words +1 if len_ucase_str > 0  else sum_pred_words
 
-	# remove predictions?
+
+	# Ignore  predictions?
 	#  NB: Its critical it gets called here. 
-	#   Its a dumb option really because remove_predicted and ignore_predicted cancel each other out
+	#   Note this doesnt really do anything. By this point we've dealt with all the stats - they are just that. remove-predicted is more useful 
 	if ignore_predicted:
 		s_filtered = s_filtered.lower()
 
@@ -57,6 +59,7 @@ def stepcount(ssteps, ssteps_add, ssteps_phrases, scanrate, ignore_spaces , igno
 				wordblock[row['Letter']]=str(int(row['Scan Steps'])+ssteps_add)
 
 	phrase_steps = phrase_hits = 0
+	# Gotcha. What if there is a double space.? This wont work. Note: CleanText should be run first on any code. Then this would be ok. 
 	all_words = s_filtered.split(' ')
 	non_blockedwords = list()
 	for word in all_words:
@@ -72,13 +75,16 @@ def stepcount(ssteps, ssteps_add, ssteps_phrases, scanrate, ignore_spaces , igno
 			non_blockedwords.append(word)
 
 	# Now turn non_blockedwords back into s_filtered
-	s_filtered = '_'.join(non_blockedwords)
+	# NB: this was causing a mess - ignore spaces was being - ironically ignored. 
+	if ignore_spaces == False:
+		s_filtered = '_'.join(non_blockedwords)
 
 	# ignore spaces?
 	if ignore_spaces:
 		s_filtered = re.sub(r"\s+", '', s_filtered)
 	else:
 		s_filtered = re.sub(r"\s+", '_', s_filtered)
+		print(s_filtered)
 
 	strlen = len(s_filtered)
 	
