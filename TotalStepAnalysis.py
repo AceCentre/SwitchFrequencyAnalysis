@@ -37,7 +37,7 @@ def textAnalyse(text_file, layouts, text, scanrate, ssteps_add, ignore_spaces , 
 
 	lines = text.splitlines()
 	if (layouts == 'csvns'):
-		print('line, predicted words, predicted letters, wordcount, hits,  dbNS-steps,  dbNS-lesher (ms), dbNS-damper (ms), dbfreqNS-steps, dbfreqNS-lesher, dbfreqNS-damper (ms), qwerty-steps, qwerty-lesher (ms), qwerty-damper (ms),eardu-steps, eardu-lesher (ms), eardu-damper (ms)')
+		print('line, predicted words, predicted letters, wordcount, hits,  dbNS-steps,  dbNS-lesher (ms), dbNS-damper (ms), dbfreqNS-steps, dbfreqNS-lesher, dbfreqNS-damper (ms), qwerty-steps, qwerty-lesher (ms), qwerty-damper (ms),eardu-steps, eardu-lesher (ms), eardu-damper (ms), abcd-steps, abcd-lesher (ms), abcd-damper (ms), aeiou-steps, aeiou-lesher (ms), aeiou-damper (ms)')
 
 	elif (layouts == 'csv'):
 		print('line, predicted words, predicted letters, wordcount, hits,  abcd-steps,  abcd-lesher (ms), abcd-damper (ms), db-steps,  db-lesher (ms), db-damper (ms), dbNS-steps,  dbNS-lesher (ms), dbNS-damper (ms), dbfreq-steps, dbfreq-lesher (ms), dbfreq-damper (ms), dbfreqNS-steps, dbfreqNS-lesher, dbfreqNS-damper (ms), qwerty-steps, qwerty-lesher (ms), qwerty-damper (ms), qwertyNS-steps, qwertyNS-lesher (ms), qwertyNS-damper (ms), aeiou-steps, aeiou-lesher (ms), aeiou-damper (ms),eardu-steps, eardu-lesher (ms), eardu-damper (ms), earduNS-steps, earduNS-lesher (ms), earduNS-damper (ms)')
@@ -49,6 +49,12 @@ def textAnalyse(text_file, layouts, text, scanrate, ssteps_add, ignore_spaces , 
 		# send
 		# output a csv of the csv!
 		if (layouts == 'csvns'):
+
+			abcdns_cmd = base_cmd.replace("nnnn", "abcd-nospace")
+			abcdns = subprocess.Popen(abcdns_cmd + '"'+line+'"', shell=True, stdout=subprocess.PIPE).stdout.read().decode("utf-8").strip().split(',')
+
+			aeiouns_cmd = base_cmd.replace("nnnn", "aeiou-nospace")
+			aeiouns = subprocess.Popen(aeiouns_cmd + '"'+line+'"', shell=True, stdout=subprocess.PIPE).stdout.read().decode("utf-8").strip().split(',')
 
 			dbns_cmd = base_cmd.replace("nnnn", "db-nospace")
 			dbns = subprocess.Popen(dbns_cmd + '"'+line+'"', shell=True, stdout=subprocess.PIPE).stdout.read().decode("utf-8").strip().split(',')
@@ -66,7 +72,9 @@ def textAnalyse(text_file, layouts, text, scanrate, ssteps_add, ignore_spaces , 
 			+','+dbns[0]+','+dbns[2]+','+dbns[3]
 			+','+dbfreqns[0]+','+dbfreqns[2]+','+dbfreqns[3]
 			+','+qwertyns[0]+','+qwertyns[2]+','+qwertyns[3]
-			+','+earduns[0]+','+earduns[2]+','+earduns[3])
+			+','+earduns[0]+','+earduns[2]+','+earduns[3]
+			+','+abcdns[0]+','+abcdns[2]+','+abcdns[3]
+			+','+aeiouns[0]+','+aeiouns[2]+','+aeiouns[3])
 
 		if (layouts == 'csv'):
 
