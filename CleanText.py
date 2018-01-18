@@ -12,6 +12,7 @@ def textClean(text_file, remove_eol, save_as):
 	with open(text_file, 'r') as myfile:
 		data=myfile.read()
 		data = re.sub(r"[^a-zA-Z\s]",'',data)
+		data = re.sub(r' {2,}' , ' ', data)
 		
 	with open(save_as,'w') as save_file:
 		lines = data.splitlines()
