@@ -76,15 +76,14 @@ def stepcount(ssteps, ssteps_add, ssteps_phrases, scanrate, ignore_spaces , igno
 
 	# Now turn non_blockedwords back into s_filtered
 	# NB: this was causing a mess - ignore spaces was being - ironically ignored. 
-	if ignore_spaces == False:
-		s_filtered = '_'.join(non_blockedwords)
+	#if ignore_spaces == False:
+	#	s_filtered = '_'.join(non_blockedwords)
 
 	# ignore spaces?
 	if ignore_spaces:
 		s_filtered = re.sub(r"\s+", '', s_filtered)
 	else:
 		s_filtered = re.sub(r"\s+", '_', s_filtered)
-		print(s_filtered)
 
 	strlen = len(s_filtered)
 	
