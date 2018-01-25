@@ -1,4 +1,7 @@
 # Switch Scanning Analysis
+
+[![Build Status](https://travis-ci.org/ACECentre/SwitchFrequencyAnalysis.svg?branch=master)](https://travis-ci.org/ACECentre/SwitchFrequencyAnalysis)
+
 ## Scripts and code to analyse switch scanning layouts for clients and their vocabulary
 
 More text to follow soon
