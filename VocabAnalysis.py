@@ -102,7 +102,7 @@ def removeStopwords(wordlist, stopwords):
     return [w for w in wordlist if w not in stopwords]
 
 @click.command()
-@click.option('--vocab-file', type=click.Path(exists=True), default='examples/vocab_cleaned.txt', help='Path to a vocab file. String on each line. ')
+@click.option('--vocab-file', type=click.Path(exists=True), default='examples/vocab-cleaned.txt', help='Path to a vocab file. String on each line. ')
 @click.option('--ignore-spaces', default=True, type=bool, help='Ignore spaces? Useful if you have no space in your layout')
 @click.option('--ssteps', type=click.Path(exists=True), default='scan-steps-lib/ssteps-eardu.csv', help='Path to a csv of your scan steps')
 @click.option('--ssteps-add', type=int, default=0, help='Increment the scan steps')
